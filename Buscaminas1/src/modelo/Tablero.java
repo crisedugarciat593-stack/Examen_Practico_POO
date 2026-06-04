@@ -35,6 +35,7 @@ public class Tablero {
 			if (!casillas[fila][columna].isEsMina()) {
 				casillas[fila][columna].setEsMina(true);
 				
+				
 				//Si colocamos esto: System.out.println("MINA EN: " + fila + "," + columna); //
 				//en esta misma posicion, el juego nos dira donde estaran las minas//
 				
