@@ -128,6 +128,20 @@ public class Tablero implements Serializable {
 
 	    return true;
 	}
+public void alternarMarca(int fila, int col) throws PosicionInvalidaException {
+	    // Verifica que la posicion exista
+	    if (fila < 0 || fila >= FILAS || col < 0 || col >= COLUMNAS) {
+	        throw new PosicionInvalidaException();
+	    }
+	    
+	    Casilla casilla = casillas[fila][col];
+	    
+	    // Solo podemos marcar casillas que no han sido descubiertas
+	    if (!casilla.isDescubierta()) {
+	        casilla.setMarcada(!casilla.isMarcada());
+	    }
+	}
+
 }
 
 

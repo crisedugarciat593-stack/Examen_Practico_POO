@@ -26,7 +26,7 @@ public class Vista {
     }
 
     public void solicitarCoordenada() {
-        System.out.print("Ingrese una coordenada (o 'guardar' / 'cargar' / 'salir'): ");
+        System.out.print("Ingrese una coordenada (o 'guardar' / 'cargar' / 'salir') (escribir M antes de la cordenada para marcar un casillero ): \n ");
     }
 
     public void mostrarVictoria(String nombre) {
