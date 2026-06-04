@@ -34,6 +34,10 @@ public class Tablero {
 			
 			if (!casillas[fila][columna].isEsMina()) {
 				casillas[fila][columna].setEsMina(true);
+				
+				//Si colocamos esto: System.out.println("MINA EN: " + fila + "," + columna); //
+				//en esta misma posicion, el juego nos dira donde estaran las minas//
+				
 				minasColocadas++;
 			}
 		}
@@ -104,6 +108,24 @@ public class Tablero {
 	}
 	public int getColumnas() {
 		return COLUMNAS;
+	}
+	
+	public boolean todasLasSegurasDescubiertas() {
+
+	    for (int i = 0; i < FILAS; i++) {
+	        for (int j = 0; j < COLUMNAS; j++) {
+
+	            Casilla casilla = casillas[i][j];
+
+	            // Si existe una casilla segura que aún no ha sido descubierta,
+	            // todavía no se ha ganado.
+	            if (!casilla.isEsMina() && !casilla.isDescubierta()) {
+	                return false;
+	            }
+	        }
+	    }
+
+	    return true;
 	}
 }
 
