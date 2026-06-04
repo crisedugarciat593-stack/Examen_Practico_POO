@@ -1,10 +1,10 @@
 package modelo;
-
+import java.io.Serializable;
 import excepciones.PosicionInvalidaException;
 import excepciones.CasillaYaDescubiertaException;
 import java.util.Random;
 
-public class Tablero {
+public class Tablero implements Serializable {
 	
 	private Casilla[][] casillas;
 	

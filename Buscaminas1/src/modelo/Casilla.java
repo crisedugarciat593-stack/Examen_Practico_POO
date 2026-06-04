@@ -1,6 +1,6 @@
 package modelo;
-
-public class Casilla {
+import java.io.Serializable;
+public class Casilla implements Serializable {
 	
 	private boolean esMina;
 	private boolean descubierta;
