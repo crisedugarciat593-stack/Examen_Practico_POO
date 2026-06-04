@@ -1,84 +1,83 @@
 package controlador;
 
-import modelo.Tablero;
-import modelo.Casilla;
-import excepciones.PosicionInvalidaException;
-import excepciones.CasillaYaDescubiertaException;
-import java.util.Scanner;
+import modelo.*;
 import vista.Vista;
+
+import java.util.*;
 import java.io.IOException;
 
 public class ControladorBuscaminas {
-    private boolean juegoTerminado;
     private Tablero tablero;
     private Vista vista;
+    private List<Jugador> jugadores;
+    private int turnoActual;
+    private boolean juegoTerminado;
 
     public ControladorBuscaminas() {
-        juegoTerminado = false;
-        tablero = new Tablero();
-        vista = new Vista();
+        this.tablero = new Tablero();
+        this.vista = new Vista();
+        this.jugadores = new ArrayList<>();
+        this.turnoActual = 0;
+        for (int i = 1; i <= 4; i++) jugadores.add(new Jugador("Jugador " + i));
     }
 
     public void iniciar() {
         Scanner scanner = new Scanner(System.in);
-        while (!juegoTerminado) {
-            vista.mostrarTablero(tablero);
-            System.out.print("Ingrese una coordenada (o 'guardar' / 'cargar' / 'salir'): ");
-            String entrada = scanner.nextLine().trim();
+        boolean salir = false;
 
-            if (entrada.equalsIgnoreCase("salir")) {
-                juegoTerminado = true;
-                break;
-            } else if (entrada.equalsIgnoreCase("guardar")) {
-                try {
-                    new GestorArchivos().guardarJuego(tablero, "partida.dat");
-                    System.out.println("¡Partida guardada!");
-                } catch (IOException e) {
-                    System.out.println("Error al guardar: " + e.getMessage());
-                }
-                continue;
-            } else if (entrada.equalsIgnoreCase("cargar")) {
-                cargarPartida();
-                continue;
+        while (!salir) {
+            this.tablero = new Tablero();
+            this.juegoTerminado = false;
+            
+            while (!juegoTerminado) {
+                Jugador jugadorActual = jugadores.get(turnoActual);
+                vista.mostrarTurno(jugadorActual.getNombre());
+                vista.mostrarTablero(tablero);
+                vista.solicitarCoordenada();
+                String entrada = scanner.nextLine().trim();
+
+                if (entrada.equalsIgnoreCase("salir")) { salir = true; juegoTerminado = true; }
+                else if (entrada.equalsIgnoreCase("guardar")) guardarPartida();
+                else if (entrada.equalsIgnoreCase("cargar")) cargarPartida();
+                else if (entrada.matches("(?i)[A-J](10|[1-9])")) procesarJugada(entrada, jugadorActual);
+                else vista.mostrarMensaje("Coordenada inválida.");
             }
-
-            if (coordenadaValida(entrada)) {
-                procesarJugada(entrada);
-            } else {
-                System.out.println("Coordenada inválida o comando desconocido.");
+            if (!salir) {
+                vista.mostrarMensaje("¿Jugar otra vez? (s/n)");
+                if (!scanner.nextLine().equalsIgnoreCase("s")) salir = true;
+                else turnoActual = 0;
             }
         }
         scanner.close();
     }
 
-    private void procesarJugada(String coordenada) {
-        int fila = obtenerFila(coordenada);
-        int columna = obtenerColumna(coordenada);
+    private void procesarJugada(String coord, Jugador jugador) {
+        int f = Character.toUpperCase(coord.charAt(0)) - 'A';
+        int c = Integer.parseInt(coord.substring(1)) - 1;
         try {
-            tablero.revelarCasilla(fila, columna);
-            Casilla c = tablero.obtenerCasilla(fila, columna);
-            if (c.isEsMina()) {
-                System.out.println("¡HAS PERDIDO!");
+            tablero.revelarCasilla(f, c);
+            if (tablero.obtenerCasilla(f, c).isEsMina()) {
+                jugador.incrementarDerrotas();
+                vista.mostrarDerrota();
                 juegoTerminado = true;
             } else if (tablero.todasLasSegurasDescubiertas()) {
-                System.out.println("¡HAS GANADO!");
+                jugador.incrementarVictorias();
+                vista.mostrarVictoria(jugador.getNombre());
                 juegoTerminado = true;
-            }
-        } catch (PosicionInvalidaException | CasillaYaDescubiertaException e) {
-            System.out.println(e.getMessage());
-        }
+            } else turnoActual = (turnoActual + 1) % jugadores.size();
+        } catch (Exception e) { vista.mostrarMensaje(e.getMessage()); }
     }
 
+    private void guardarPartida() {
+        try { new GestorArchivos().guardarJuego(tablero, jugadores, turnoActual, "partida.dat"); vista.mostrarMensaje("Guardado."); }
+        catch (IOException e) { vista.mostrarMensaje("Error al guardar."); }
+    }
+    @SuppressWarnings("unchecked")
     private void cargarPartida() {
         try {
-            this.tablero = new GestorArchivos().cargarJuego("partida.dat");
-            System.out.println("¡Partida cargada correctamente!");
-        } catch (IOException | ClassNotFoundException e) {
-            System.out.println("No se pudo cargar la partida: " + e.getMessage());
-        }
+            Object[] data = new GestorArchivos().cargarJuego("partida.dat");
+            this.tablero = (Tablero) data[0]; this.jugadores = (List<Jugador>) data[1]; this.turnoActual = (int) data[2];
+            vista.mostrarMensaje("Partida cargada.");
+        } catch (Exception e) { vista.mostrarMensaje("Error al cargar."); }
     }
-
-    private boolean coordenadaValida(String entrada) { return entrada.matches("^[A-Ja-j](10|[1-9])$"); }
-    private int obtenerFila(String entrada) { return Character.toUpperCase(entrada.charAt(0)) - 'A'; }
-    private int obtenerColumna(String entrada) { return Integer.parseInt(entrada.substring(1)) - 1; }
 }
