@@ -6,8 +6,8 @@ Proyecto desarrollado para la asignatura de Programación Orientada a Objetos de
 
 * Geovanny Steven Sanchez Maza
 * Cristian Eduardo Garcia Torres
-* Luis Fuelagan
-* 
+* Luis Fernando Fuelagan Pujota
+* Steven Javier Estupiñan Guaman
 
 # Características 
 * Arquitectura MVC: Separación estricta entre el Modelo (lógica y datos), Vista (interfaz de consola) y Controlador (gestión de turnos y entradas).
