@@ -28,5 +28,5 @@ Proyecto desarrollado para la asignatura de Programación Orientada a Objetos de
 ### Pasos para ejecutar
 1. Clonar el repositorio:
    ```bash
-   git clone [URL_DE_TU_REPOSITORIO]
-   cd [NOMBRE_DE_LA_CARPETA]
+   git clone https://github.com/crisedugarciat593-stack/Examen_Practico_POO.git
+   cd Examen_Practico_POO
