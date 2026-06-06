@@ -23,7 +23,9 @@ public class Tablero implements Serializable {
 		colocarMinas();
 		calcularAdyacentes();
 	}
-	public void colocarMinas() {
+	
+	//Se mejora el encapsulamiento al cambiar el public a private
+	private void colocarMinas() {
 		
 		Random random = new Random();
 		int minasColocadas = 0;
@@ -128,6 +130,9 @@ public class Tablero implements Serializable {
 
 	    return true;
 	}
+	
+	
+	
 public void alternarMarca(int fila, int col) throws PosicionInvalidaException {
 	    // Verifica que la posicion exista
 	    if (fila < 0 || fila >= FILAS || col < 0 || col >= COLUMNAS) {
@@ -141,6 +146,7 @@ public void alternarMarca(int fila, int col) throws PosicionInvalidaException {
 	        casilla.setMarcada(!casilla.isMarcada());
 	    }
 	}
+
 
 }
 
