@@ -53,7 +53,6 @@ public class ControladorBuscaminas {
                         vista.mostrarMensaje("Coordenada inválida para marcar.");
                     }
                 }
-                // -----------------------------------------
                 
                 else if (entrada.matches("(?i)[A-J](10|[1-9])")) procesarJugada(entrada, jugadorActual);
                 else vista.mostrarMensaje("Coordenada inválida.");
